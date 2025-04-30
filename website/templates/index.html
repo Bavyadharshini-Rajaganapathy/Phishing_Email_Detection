@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Phishing Detector</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding-top: 40px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #00e676;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        form {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 230, 118, 0.2);
+            max-width: 700px;
+            width: 90%;
+            animation: zoomIn 1s ease;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 16px;
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+            border: 1px solid #333;
+            border-radius: 8px;
+            resize: vertical;
+            transition: background-color 0.3s;
+        }
+
+        textarea:focus {
+            background-color: #333;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #00e676, #00c853);
+            border: none;
+            border-radius: 8px;
+            color: #121212;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #00c853, #00e676);
+            transform: scale(1.03);
+        }
+
+        #result {
+            font-size: 22px;
+            margin-top: 30px;
+            text-align: center;
+            font-weight: bold;
+            color: #ffea00;
+            animation: fadeInResult 1s ease;
+        }
+
+        @keyframes fadeInResult {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <h2>Phishing Email Detection</h2>
+
+    <form method="POST" action="/predict">
+        <textarea name="email" placeholder="Paste email content here...">{{ email_text if email_text else '' }}</textarea><br>
+
+        <button type="submit">Check Email</button>
+    </form>
+
+    {% if prediction %}
+        <div id="result">Prediction: {{ prediction }}</div>
+    {% endif %}
+</body>
+</html>
