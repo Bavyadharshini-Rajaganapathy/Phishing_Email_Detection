@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Mail Detector</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            padding: 40px;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            background-color: #edeefd;
+
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            border: none;
+            background: none;
+            color: #718096;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: #4a90e2;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Predict Tab Styles */
+        .prediction-methods {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .prediction-method {
+            flex-basis: 45%;
+            min-width: 400px;
+            margin: 15px;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: #f8f9fa;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .prediction-method:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .prediction-method h3 {
+            margin-bottom: 20px;
+            font-weight: 1000;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+        }
+
+        .prediction-method h3 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .drop-area {
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .drop-area:hover {
+            border-color: #3498db;
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .drop-area i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+        }
+
+        .prediction-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* About Tab Styles */
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .about-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-text h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .about-text p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 40px;
+            text-align: center;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            flex-basis: 150px;
+            margin: 15px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+        }
+
+        /* New styles for About and Avoid tabs */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .feature-icon {
+            height: 3rem;
+            width: 3rem;
+            background-color: #ebf5ff;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: #3b82f6;
+        }
+
+        .tip-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .tip-icon {
+            background-color: #ecfdf5;
+            padding: 0.5rem;
+            border-radius: 9999px;
+            margin-right: 1rem;
+            color: #10b981;
+        }
+
+        .example-box {
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            margin-top: 1rem;
+        }
+
+        .grid-cols-responsive {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .text-blue-800 {
+            color: #1e40af;
+        }
+
+        .text-blue-700 {
+            color: #1d4ed8;
+        }
+
+        .text-blue-600 {
+            color: #2563eb;
+        }
+
+        .text-gray-600 {
+            color: #4b5563;
+        }
+
+        .text-gray-700 {
+            color: #374151;
+        }
+
+        .text-gray-800 {
+            color: #1f2937;
+        }
+
+        .bg-blue-50 {
+            background-color: #eff6ff;
+        }
+
+        .bg-gray-50 {
+            background-color: #f9fafb;
+        }
+
+        .bg-green-100 {
+            background-color: #d1fae5;
+        }
+
+        .bg-red-100 {
+            background-color: #fee2e2;
+        }
+
+        .bg-amber-100 {
+            background-color: #fef3c7;
+        }
+
+        .text-red-600 {
+            color: #dc2626;
+        }
+
+        .text-green-600 {
+            color: #059669;
+        }
+
+        .text-amber-600 {
+            color: #d97706;
+        }
+
+        .rounded-xl {
+            border-radius: 0.75rem;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+
+        .hidden {
+    display: none;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.inset-0 {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+}
+
+.absolute {
+    position: absolute;
+}
+
+.relative {
+    position: relative;
+}
+
+.max-w-md {
+    max-width: 28rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.mx-4 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.bg-opacity-50 {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.border-blue-500 {
+    border-color: #3b82f6;
+}
+
+.bg-blue-50 {
+    background-color: #eff6ff;
+}
+
+.bg-red-100 {
+    background-color: #fee2e2;
+}
+
+.bg-green-100 {
+    background-color: #d1fae5;
+}
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-down {
+            animation: fadeInDown 0.6s ease-in-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Right Column -->
+    <div class="main-content">
+        <div class="animate-fade-in-down">
+            <h1 class="text-4xl md:text-6xl font-bold justify-center text-blue-800">Phishing Mail Detector</h1>
+            <p class="text-xl text-gray-600 mb-8 justify-center">
+                Protect yourself from email scams with our advanced phishing detection tool
+            </p>
+        </div>
+
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('predict')">Predict</button>
+            <button class="tab-btn" onclick="switchTab('about')">About</button>
+            <button class="tab-btn" onclick="switchTab('sample')">Sample Mail</button>
+            <button class="tab-btn" onclick="switchTab('avoid')">How to Avoid</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content active" id="predictTab">
+            <div class="prediction-methods">
+                <div class="prediction-method">
+                    <h3><i class="fas fa-upload"></i> Drop Email File</h3>
+                    <div class="drop-area" id="drop-area">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drag & drop an email file here</p>
+                        <p>or</p>
+                        <button class="btn">Choose File</button>
+                    </div>
+                    <button class="btn" id="analyze-file-btn">Analyze Email</button>
+                </div>
+
+                <div class="prediction-method">
+                    <h3><i class="fas fa-keyboard"></i> Enter Email Details</h3>
+                    <form class="prediction-form" id="prediction-form">
+                        <div class="form-group">
+                            <label for="sender">Sender Email</label>
+                            <input type="email" class="form-control" id="sender" placeholder="Enter sender's email">
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" class="form-control" id="subject" placeholder="Enter email subject">
+                        </div>
+                        <div class="form-group">
+                            <label for="body">Email Body</label>
+                            <textarea class="form-control" id="body" placeholder="Enter email content"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Predict</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Prediction Result Modal -->
+        <div id="resultModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+            <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
+            <div class="relative bg-white rounded-xl p-8 max-w-md w-full mx-4 animate-fadeIn">
+                <button onclick="closeModal('resultModal')"
+                    class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h3 class="text-2xl font-bold mb-4" id="resultTitle">Prediction Result</h3>
+                <div class="mb-6" id="resultContent">
+                    <p class="text-lg" id="resultText"></p>
+                </div>
+                <div class="flex justify-center">
+                    <button onclick="closeModal('resultModal')" class="btn">Close</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- About Page -->
+        <div class="tab-content" id="aboutTab">
+            <div class="p-4">
+                <div class="animate-fadeIn text-center mb-10">
+                    <h2 class="text-3xl font-bold text-blue-800 mb-4">About Our Phishing Detection Tool</h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto">
+                        Our advanced phishing detection system uses machine learning algorithms to identify and protect
+                        you from
+                        malicious emails.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
+                    <div class="animate-fadeIn">
+                        <h3 class="text-2xl font-semibold text-blue-700 mb-4">How It Works</h3>
+                        <p class="text-gray-700 mb-4">
+                            Our system analyzes various aspects of emails including sender information, content, links,
+                            and attachments
+                            to determine if an email is legitimate or a phishing attempt.
+                        </p>
+                        <p class="text-gray-700">
+                            Using advanced natural language processing and pattern recognition, we can identify even
+                            sophisticated
+                            phishing attempts that might bypass traditional filters.
+                        </p>
+                    </div>
+
+                    <div class="relative h-64 md:h-56">
+                        <img src="{{ url_for('static', filename='about.svg') }}" alt="How our phishing detection works"
+                            class="object-contain rounded-lg w-full h-full">
+                    </div>
+                </div>
+
+                <div class="animate-fadeIn bg-blue-50 rounded-xl p-8 mb-12">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-6 text-center">Key Features</h3>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-envelope-open-text"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Real-time Analysis</h4>
+                            <p class="text-gray-600 text-sm">Instant scanning and detection of suspicious emails</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">High Accuracy</h4>
+                            <p class="text-gray-600 text-sm">Over 99% detection rate with minimal false positives</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-sliders-h"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Customizable</h4>
+                            <p class="text-gray-600 text-sm">Adjust sensitivity based on your security needs</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Educational</h4>
+                            <p class="text-gray-600 text-sm">Learn why an email was flagged as phishing</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animate-fadeIn text-center">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-6">Our Mission</h3>
+                    <p class="text-gray-700 max-w-3xl mx-auto mb-8">
+                        We're committed to making the internet safer by providing accessible tools that help everyone
+                        identify and
+                        avoid phishing attempts. By educating users and providing powerful detection tools, we aim to
+                        reduce the
+                        success rate of phishing attacks worldwide.
+                    </p>
+
+                    <div class="flex justify-center space-x-10">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">10M+</div>
+                            <div class="text-gray-600">Emails Analyzed</div>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">99.8%</div>
+                            <div class="text-gray-600">Detection Rate</div>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">500K+</div>
+                            <div class="text-gray-600">Users Protected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="tab-content" id="sampleTab">
+            <!-- Sample mail content would go here -->
+            <h2>Sample Phishing Emails</h2>
+            <p>Examples of common phishing emails will be displayed here.</p>
+        </div>
+
+
+        <!-- how to avoid -->
+        <div class="tab-content" id="avoidTab">
+            <div class="p-4">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-blue-800 mb-4">How to Avoid Phishing Attacks</h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto">
+                        Phishing attacks are becoming increasingly sophisticated. Learn these essential tips to protect
+                        yourself from
+                        falling victim to phishing scams.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+                    <div class="relative h-64 md:h-64">
+                        <img src="{{ url_for('static', filename='avoid.svg') }}" alt="Phishing protection illustration"
+                            class="object-contain rounded-lg w-full h-full">
+                    </div>
+
+                    <div>
+                        <div class="flex items-start mb-6">
+                            <div class="bg-red-100 p-2 rounded-full mr-4">
+                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">What is Phishing?</h3>
+                                <p class="text-gray-600">
+                                    Phishing is a type of cyber attack where attackers disguise themselves as
+                                    trustworthy entities to trick
+                                    victims into revealing sensitive information such as passwords, credit card numbers,
+                                    or personal data.
+                                    These attacks often come via email, text messages, or fake websites.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-amber-100 p-2 rounded-full mr-4">
+                                <i class="fas fa-question-circle text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">Why Should You Care?</h3>
+                                <p class="text-gray-600">
+                                    Phishing attacks can lead to identity theft, financial loss, unauthorized purchases,
+                                    and compromised
+                                    accounts. Anyone can be targeted, and the consequences can be severe and
+                                    long-lasting.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 rounded-xl p-8 mb-12">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-8 text-center">Essential Tips to Avoid Phishing
+                    </h3>
+
+                    <div class="space-y-8">
+                        <div class="tip-card">
+                            <div class="tip-header">
+                                <div class="tip-icon">
+                                    <i class="fas fa-eye text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-800 mb-2">1. Verify the Sender</h4>
+                                    <p class="text-gray-600 mb-4">
+                                        Always check the email address of the sender carefully. Phishers often use email
+                                        addresses that look
+                                        similar to legitimate ones but with slight variations.
+                                    </p>
+                                    <div class="example-box">
+                                        <p class="text-sm font-medium text-gray-700 mb-2">Example:</p>
+                                        <p class="text-sm text-red-600 mb-1">❌ amazon-support@amazn.com</p>
+                                        <p class="text-sm text-green-600">✓ help@amazon.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-header">
+                                <div class="tip-icon">
+                                    <i class="fas fa-lock text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-800 mb-2">2. Don't Click Suspicious Links
+                                    </h4>
+                                    <p class="text-gray-600 mb-4">
+                                        Hover over links before clicking to see the actual URL. If it looks suspicious
+                                        or different from what
+                                        you expect, don't click it. Instead, manually type the website address in your
+                                        browser.
+                                    </p>
+                                    <div class="example-box">
+                                        <p class="text-sm font-medium text-gray-700 mb-2">Red Flags:</p>
+                                        <ul class="text-sm text-gray-600 list-disc list-inside space-y-1">
+                                            <li>Misspelled domain names (paypa1.com instead of paypal.com)</li>
+                                            <li>Unusual subdomains (amazon.secure-login.com)</li>
+                                            <li>URLs that don't match the supposed sender</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-header">
+                                <div class="tip-icon">
+                                    <i class="fas fa-shield-alt text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-800 mb-2">3. Be Wary of Urgent Requests
+                                    </h4>
+                                    <p class="text-gray-600 mb-4">
+                                        Phishers often create a false sense of urgency to make you act quickly without
+                                        thinking. Be suspicious
+                                        of emails claiming your account will be suspended, you've won a prize, or
+                                        there's been unauthorized
+                                        access to your account.
+                                    </p>
+                                    <div class="example-box">
+                                        <p class="text-sm font-medium text-gray-700 mb-2">Common Urgent Phrases:</p>
+                                        <ul class="text-sm text-gray-600 list-disc list-inside space-y-1">
+                                            <li>"Immediate action required"</li>
+                                            <li>"Your account will be suspended in 24 hours"</li>
+                                            <li>"Unauthorized transaction detected"</li>
+                                            <li>"Final warning"</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-header">
+                                <div class="tip-icon">
+                                    <i class="fas fa-check text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-800 mb-2">4. Never Share Sensitive
+                                        Information</h4>
+                                    <p class="text-gray-600 mb-4">
+                                        Legitimate companies will never ask for sensitive information like passwords,
+                                        full credit card
+                                        numbers, or social security numbers via email. If an email asks for this
+                                        information, it's likely a
+                                        phishing attempt.
+                                    </p>
+                                    <div class="example-box">
+                                        <p class="text-sm font-medium text-gray-700 mb-2">Information Never to Share via
+                                            Email:</p>
+                                        <ul class="text-sm text-gray-600 list-disc list-inside space-y-1">
+                                            <li>Passwords or PINs</li>
+                                            <li>Full credit card numbers</li>
+                                            <li>Social security numbers</li>
+                                            <li>Bank account details</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-8">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
+                        What to Do If You Suspect a Phishing Attempt
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="tip-card">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">If You Haven't Clicked:</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                                <li>Don't click any links or download any attachments</li>
+                                <li>Report the email as phishing to your email provider</li>
+                                <li>Delete the email</li>
+                                <li>
+                                    If it's from a company you do business with, contact them directly through their
+                                    official website or
+                                    phone number (not from the email)
+                                </li>
+                            </ol>
+                        </div>
+
+                        <div class="tip-card">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">If You've Already Clicked:</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                                <li>Change your passwords immediately, especially for any accounts mentioned in the
+                                    email</li>
+                                <li>Monitor your accounts for suspicious activity</li>
+                                <li>Run a virus scan on your device</li>
+                                <li>Contact your bank or credit card company if you shared financial information</li>
+                                <li>Report the phishing attempt to the legitimate company being impersonated</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File drop functionality
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+    
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+    
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    
+        // Highlight drop area when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+    
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+    
+        function highlight() {
+            dropArea.classList.add('border-blue-500', 'bg-blue-50');
+        }
+    
+        function unhighlight() {
+            dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+        }
+    
+        // Handle dropped files
+        dropArea.addEventListener('drop', handleDrop, false);
+        dropArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFiles);
+    
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files } });
+        }
+    
+        function handleFiles(e) {
+            const files = e.target.files;
+            if (files.length) {
+                const file = files[0];
+                analyzeFile(file);
+            }
+        }
+    
+        function analyzeFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                sendPredictionRequest({ file_content: content });
+            };
+            reader.readAsText(file);
+        }
+    
+        // Form submission
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const sender = document.getElementById('sender').value;
+            const subject = document.getElementById('subject').value;
+            const body = document.getElementById('body').value;
+            
+            // Simple validation
+            if (!body.trim()) {
+                showResult({
+                    prediction: "Error",
+                    details: "Please enter email content to analyze."
+                });
+                return;
+            }
+            
+            sendPredictionRequest({ sender, subject, body });
+        });
+    
+        // Analyze file button
+        document.getElementById('analyze-file-btn').addEventListener('click', function() {
+            fileInput.click();
+        });
+    
+        // Send prediction request to backend
+        function sendPredictionRequest(data) {
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                showResult(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showResult({
+                    prediction: "Error",
+                    details: "An error occurred while processing your request."
+                });
+            });
+        }
+    
+        // Show results in modal
+        function showResult(data) {
+            const modal = document.getElementById('resultModal');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            const resultContent = document.getElementById('resultContent');
+            
+            // Clear previous classes
+            resultContent.className = 'mb-6';
+            
+            if (data.prediction === "Phishing Email") {
+                resultTitle.textContent = "⚠️ Phishing Detected!";
+                resultText.textContent = "This email appears to be a phishing attempt. Be cautious!";
+                resultContent.classList.add('bg-red-100', 'p-4', 'rounded-lg');
+            } else if (data.prediction === "Safe Email") {
+                resultTitle.textContent = "✅ Safe Email";
+                resultText.textContent = "This email appears to be legitimate.";
+                resultContent.classList.add('bg-green-100', 'p-4', 'rounded-lg');
+            } else {
+                // Error case
+                resultTitle.textContent = data.prediction;
+                resultText.textContent = data.details;
+                resultContent.classList.add('bg-amber-100', 'p-4', 'rounded-lg');
+            }
+            
+            if (data.details) {
+                const details = document.createElement('p');
+                details.className = 'mt-2 text-sm';
+                details.textContent = data.details;
+                resultText.appendChild(document.createElement('br'));
+                resultText.appendChild(details);
+            }
+            
+            modal.classList.remove('hidden');
+        }
+    
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+    
+        // Tab switching
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+    
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+    
+            // Show selected tab content and activate button
+            document.getElementById(tabId + 'Tab').classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

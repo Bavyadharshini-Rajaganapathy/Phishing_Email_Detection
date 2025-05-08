@@ -1,9 +1,10 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template , jsonify, send_from_directory
 import joblib
 import re
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import nltk
+import os
 
 nltk.download('stopwords')
 
@@ -23,20 +24,46 @@ def preprocess(text):
 
 app = Flask(__name__)
 
+# Add this route to serve static files
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    root_dir = os.path.dirname(os.getcwd())
+    return send_from_directory(os.path.join(root_dir, 'static'), filename)
+
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('home.html')
+
+@app.route('/PMD')
+def PMD():
+    return render_template('predict.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    email_text = request.form['email']
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+    
+    sender = data.get('sender', '')
+    subject = data.get('subject', '')
+    body = data.get('body', '')
+    
+    # Combined text for analysis
+    email_text = f"{sender} {subject} {body}".lower()
+
+    # email_text = request.form['email']
     cleaned = preprocess(email_text)
     vectorized = vectorizer.transform([cleaned])
     result = model.predict(vectorized)[0]
-    label = "Phishing Email" if result == 1 else "Safe Email"
+    # label = "Phishing Email" if result == 1 else "Safe Email"
 
-    # Send prediction and email content back to the template
-    return render_template('index.html', prediction=label, email_text=email_text)
+    
+    response = {
+        'prediction': "Phishing Email" if result == 1 else "Safe Email"
+    }
+    
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run(debug=True)
