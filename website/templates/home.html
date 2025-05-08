@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phishing Mail Detector</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+    <style>
+        @keyframes fade-in-down {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-down {
+            animation: fade-in-down 0.8s ease-out both;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-b from-blue-50 to-white min-h-screen flex items-center justify-center p-10">
+    <main class="max-w-4xl w-full text-center space-y-8">
+        <div class="animate-fade-in-down">
+            <h1 class="text-4xl md:text-6xl font-bold text-blue-800 mb-4">Phishing Mail Detector</h1>
+            <p class="text-xl text-gray-600 mb-8">
+                Protect yourself from email scams with our advanced phishing detection tool
+            </p>
+        </div>
+
+        <div class="relative w-full h-64 md:h-80 my-4">
+            <img src="{{ url_for('static', filename='img1.svg') }}" alt="Phishing protection illustration" class="object-contain w-full h-full" />
+
+
+        </div>
+
+        <div class="flex flex-col items-center space-y-4">
+            <p class="text-gray-700 max-w-2xl">
+                Our AI-powered tool analyzes emails to identify potential phishing attempts, helping you stay safe
+                online
+                and protect your sensitive information.
+            </p>
+            <a href="/PMD" class="mt-6 inline-block">
+                <button
+                    class="bg-blue-600 hover:bg-blue-700 text-white text-3xl font-semibold px-2 py-4 w-72 text-lg rounded-full transition-all duration-300 transform hover:scale-105">
+                    Get Started
+                </button>
+            </a>
+        </div>
+
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card 1 -->
+            <div class="p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <div class="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-center">Accurate Detection</h3>
+                <p class="text-gray-600 text-center mt-2">Advanced algorithms to identify phishing attempts</p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <div class="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-center">Fast Results</h3>
+                <p class="text-gray-600 text-center mt-2">Get instant analysis of suspicious emails</p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <div class="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-center">Educational Resources</h3>
+                <p class="text-gray-600 text-center mt-2">Learn how to protect yourself from scams</p>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
