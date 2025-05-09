@@ -389,64 +389,64 @@
 
 
         .hidden {
-    display: none;
-}
+            display: none;
+        }
 
-.fixed {
-    position: fixed;
-}
+        .fixed {
+            position: fixed;
+        }
 
-.inset-0 {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
 
-.backdrop-blur-sm {
-    backdrop-filter: blur(4px);
-}
+        .backdrop-blur-sm {
+            backdrop-filter: blur(4px);
+        }
 
-.absolute {
-    position: absolute;
-}
+        .absolute {
+            position: absolute;
+        }
 
-.relative {
-    position: relative;
-}
+        .relative {
+            position: relative;
+        }
 
-.max-w-md {
-    max-width: 28rem;
-}
+        .max-w-md {
+            max-width: 28rem;
+        }
 
-.w-full {
-    width: 100%;
-}
+        .w-full {
+            width: 100%;
+        }
 
-.mx-4 {
-    margin-left: 1rem;
-    margin-right: 1rem;
-}
+        .mx-4 {
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
 
-.bg-opacity-50 {
-    background-color: rgba(0, 0, 0, 0.5);
-}
+        .bg-opacity-50 {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
 
-.border-blue-500 {
-    border-color: #3b82f6;
-}
+        .border-blue-500 {
+            border-color: #3b82f6;
+        }
 
-.bg-blue-50 {
-    background-color: #eff6ff;
-}
+        .bg-blue-50 {
+            background-color: #eff6ff;
+        }
 
-.bg-red-100 {
-    background-color: #fee2e2;
-}
+        .bg-red-100 {
+            background-color: #fee2e2;
+        }
 
-.bg-green-100 {
-    background-color: #d1fae5;
-}
+        .bg-green-100 {
+            background-color: #d1fae5;
+        }
 
         @keyframes fadeIn {
             from {
@@ -870,45 +870,45 @@
         fileInput.type = 'file';
         fileInput.style.display = 'none';
         document.body.appendChild(fileInput);
-    
+
         // Prevent default drag behaviors
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, preventDefaults, false);
         });
-    
+
         function preventDefaults(e) {
             e.preventDefault();
             e.stopPropagation();
         }
-    
+
         // Highlight drop area when item is dragged over it
         ['dragenter', 'dragover'].forEach(eventName => {
             dropArea.addEventListener(eventName, highlight, false);
         });
-    
+
         ['dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, unhighlight, false);
         });
-    
+
         function highlight() {
             dropArea.classList.add('border-blue-500', 'bg-blue-50');
         }
-    
+
         function unhighlight() {
             dropArea.classList.remove('border-blue-500', 'bg-blue-50');
         }
-    
+
         // Handle dropped files
         dropArea.addEventListener('drop', handleDrop, false);
         dropArea.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', handleFiles);
-    
+
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
             handleFiles({ target: { files } });
         }
-    
+
         function handleFiles(e) {
             const files = e.target.files;
             if (files.length) {
@@ -916,23 +916,23 @@
                 analyzeFile(file);
             }
         }
-    
+
         function analyzeFile(file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const content = e.target.result;
                 sendPredictionRequest({ file_content: content });
             };
             reader.readAsText(file);
         }
-    
+
         // Form submission
-        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+        document.getElementById('prediction-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const sender = document.getElementById('sender').value;
             const subject = document.getElementById('subject').value;
             const body = document.getElementById('body').value;
-            
+
             // Simple validation
             if (!body.trim()) {
                 showResult({
@@ -941,15 +941,15 @@
                 });
                 return;
             }
-            
+
             sendPredictionRequest({ sender, subject, body });
         });
-    
+
         // Analyze file button
-        document.getElementById('analyze-file-btn').addEventListener('click', function() {
+        document.getElementById('analyze-file-btn').addEventListener('click', function () {
             fileInput.click();
         });
-    
+
         // Send prediction request to backend
         function sendPredictionRequest(data) {
             fetch('/predict', {
@@ -959,34 +959,34 @@
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                showResult(data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showResult({
-                    prediction: "Error",
-                    details: "An error occurred while processing your request."
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showResult(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showResult({
+                        prediction: "Error",
+                        details: "An error occurred while processing your request."
+                    });
                 });
-            });
         }
-    
+
         // Show results in modal
         function showResult(data) {
             const modal = document.getElementById('resultModal');
             const resultTitle = document.getElementById('resultTitle');
             const resultText = document.getElementById('resultText');
             const resultContent = document.getElementById('resultContent');
-            
+
             // Clear previous classes
             resultContent.className = 'mb-6';
-            
+
             if (data.prediction === "Phishing Email") {
                 resultTitle.textContent = "⚠️ Phishing Detected!";
                 resultText.textContent = "This email appears to be a phishing attempt. Be cautious!";
@@ -1001,7 +1001,7 @@
                 resultText.textContent = data.details;
                 resultContent.classList.add('bg-amber-100', 'p-4', 'rounded-lg');
             }
-            
+
             if (data.details) {
                 const details = document.createElement('p');
                 details.className = 'mt-2 text-sm';
@@ -1009,27 +1009,29 @@
                 resultText.appendChild(document.createElement('br'));
                 resultText.appendChild(details);
             }
-            
+
             modal.classList.remove('hidden');
         }
-    
+
         // Close modal
         function closeModal(modalId) {
+            document.getElementById('resultText').innerText = '';
             document.getElementById(modalId).classList.add('hidden');
+            document.getElementById('prediction-form').reset();
         }
-    
+
         // Tab switching
         function switchTab(tabId) {
             // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-    
+
             // Remove active class from all tab buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-    
+
             // Show selected tab content and activate button
             document.getElementById(tabId + 'Tab').classList.add('active');
             event.currentTarget.classList.add('active');
